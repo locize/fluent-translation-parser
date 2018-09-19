@@ -21,84 +21,87 @@ $ npm install fluent-translation-parser
 ```js
 import { parse, stringify } from "fluent-translation-parser";
 
-const AST = parse("<div>test</div>");
+const AST = parse(`
+    { $unreadEmails ->
+        [one] You have one unread email.
+       *[other] You have { $unreadEmails } unread emails.
+    }
+`);
 // will return
 /*
 [
   {
-    "type": "tag",
-    "name": "div",
-    "voidElement": false,
-    "attrs": {},
+    "type": "text",
+    "content": "    { $unreadEmails ->\n        [one] You have one unread email.\n       *[other] You have { $unreadEmails } unread emails.\n    }",
     "children": [
       {
         "type": "text",
-        "content": "test"
+        "content": "    "
+      },
+      {
+        "type": "selector",
+        "raw": "{ $unreadEmails ->",
+        "prefix": "{",
+        "suffix": "->",
+        "content": " $unreadEmails ",
+        "variable": "unreadEmails"
+      },
+      {
+        "type": "text",
+        "content": "\n        "
+      },
+      {
+        "type": "variant",
+        "isDefault": false,
+        "raw": "[one]",
+        "prefix": "[",
+        "suffix": "]",
+        "content": "one",
+        "variable": "one"
+      },
+      {
+        "type": "text",
+        "content": " You have one unread email.\n       "
+      },
+      {
+        "type": "variant",
+        "isDefault": true,
+        "raw": "*[other]",
+        "prefix": "*[",
+        "suffix": "]",
+        "content": "other",
+        "variable": "other"
+      },
+      {
+        "type": "text",
+        "content": " You have "
+      },
+      {
+        "type": "variable",
+        "raw": "{ $unreadEmails }",
+        "prefix": "{",
+        "suffix": "}",
+        "content": " $unreadEmails ",
+        "variable": "unreadEmails"
+      },
+      {
+        "type": "text",
+        "content": " unread emails.\n    "
+      },
+      {
+        "type": "closingBracket",
+        "raw": "}",
+        "prefix": "",
+        "suffix": "}",
+        "content": ""
+      },
+      {
+        "type": "text",
+        "content": ""
       }
     ]
   }
 ]
 */
-stringify(AST); // -> '<div>test</div>'
-
-parse(
-  "test {{val}} text {{- encoded}} with {{val, format}} some $t{nesting} help"
-);
-// will return
-/*
-[
-  {
-    "type": "text",
-    "content": "test "
-  },
-  {
-    "type": "interpolation",
-    "raw": "{{val}}",
-    "prefix": "{{",
-    "suffix": "}}",
-    "content": "val",
-    "variable": "val"
-  },
-  {
-    "type": "text",
-    "content": " text "
-  },
-  {
-    "type": "interpolation_unescaped",
-    "raw": "{{- encoded}}",
-    "prefix": "{{-",
-    "suffix": "}}",
-    "content": " encoded",
-    "variable": "encoded"
-  },
-  {
-    "type": "text",
-    "content": " with "
-  },
-  {
-    "type": "interpolation",
-    "raw": "{{val, format}}",
-    "prefix": "{{",
-    "suffix": "}}",
-    "content": "val, format",
-    "variable": "val, format"
-  },
-  {
-    "type": "text",
-    "content": " some "
-  },
-  {
-    "type": "nesting",
-    "raw": "$t{nesting}",
-    "prefix": "$t{",
-    "suffix": "}",
-    "content": "nesting",
-    "variable": "nesting"
-  },
-  {
-    "type": "text",
-    "content": " help"
-  }
-]
-*/
+stringify(AST);
 ```
