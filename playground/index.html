@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="/fluentTranslationParser.js"></script>
+</head>
+
+<body>
+  <div style="display: flex;">
+    <div style="flex: 1;">
+      <h4>Input:</h4>
+      <textarea id="inputField" style="width: 90%; height: 300px;"></textarea>
+      <h4>Stringified:</h4>
+      <pre><code id="Stringified"></code></pre>
+    </div>
+    <div style="flex: 1; overflow: scroll;">
+      <h4>AST:</h4>
+      <pre><code id="AST"></code></pre>
+    </div>
+  </div>
+</body>
+
+<script>
+  var parser = fluentTranslationParser;
+  var targetEle = document.getElementById('AST');
+  var stringifiedEle = document.getElementById('Stringified');
+  var sourceEle = document.getElementById('inputField');
+
+  handleTextChange = function (e) {
+    var val = e.target.value;
+
+    try {
+      var ast = parser.parse(val);
+      targetEle.innerHTML = JSON.stringify(ast, null, 2);
+      stringifiedEle.innerHTML = parser.stringify(ast);
+    } catch (error) {
+      targetEle.innerHTML = JSON.stringify(error, null, 2);
+    }
+  }
+
+  sourceEle.oninput = handleTextChange;
+
+</script>
+
+</html>
