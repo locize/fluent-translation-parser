@@ -242,11 +242,10 @@
       children.forEach(child => {
         if (child.type === 'text') {
           if (child.content.indexOf('{') > -1 || child.content.indexOf('[') > -1) {
-            const splitted = child.content.split(REGEXP);
-            console.warn('try splitt?', splitted.length);
-            const newChildren = splitted.length > 1 ? splitted.reduce((mem, match, index) => {
-              console.warn(mem, match, index);
+            const splitted = child.content.split(REGEXP); // console.warn('try splitt?', splitted.length)
 
+            const newChildren = splitted.length > 1 ? splitted.reduce((mem, match, index) => {
+              // console.warn(mem, match, index);
               if (index % 2 === 0) {
                 mem.push({
                   type: 'text',
@@ -287,6 +286,7 @@
                         const content = match.substring(1, match.length - 1);
                         mem.push({
                           type: 'variable',
+                          formatted: true,
                           raw: match,
                           prefix: '{',
                           suffix: '}',
@@ -372,9 +372,9 @@
   function astStats(ast) {
     // console.warn(JSON.stringify(ast, null, 2))
     const stats = {
-      interpolation: 0,
-      interpolation_unescaped: 0,
-      nesting: 0,
+      references: 0,
+      variables: 0,
+      selectors: 0,
       tags: 0
     };
 
@@ -382,9 +382,9 @@
       if (!children) return;
       children.forEach(child => {
         if (child.type === 'tag') stats.tags++;
-        if (child.type === 'interpolation_unescaped') stats.interpolation_unescaped++;
-        if (child.type === 'interpolation') stats.interpolation++;
-        if (child.type === 'nesting') stats.nesting++;
+        if (child.type === 'variable') stats.variables++;
+        if (child.type === 'reference') stats.references++;
+        if (child.type === 'selector') stats.selectors++;
         if (child.children) process(child.children);
       });
     }
