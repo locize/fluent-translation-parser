@@ -82,14 +82,14 @@
 
   var empty = Object.create ? Object.create(null) : {}; // common logic for pushing a child node onto a list
 
-  function pushTextNode(list, html, level, start, ignoreWhitespace) {
+  function pushTextNode(list, html, level, start, ignoreWhitespace, ignoreCollapse) {
     // calculate correct end of the content slice in case there's
     // no tag after the text node.
     var end = html.indexOf('<', start);
     var content = html.slice(start, end === -1 ? undefined : end); // if a node is nothing but whitespace, collapse it as the spec states:
     // https://www.w3.org/TR/html4/struct/text.html#h-9.1
 
-    if (/^\s*$/.test(content)) {
+    if (!ignoreCollapse && /^\s*$/.test(content)) {
       content = ' ';
     } // don't add whitespace-only text nodes if they would be trailing text nodes
     // or if they would be leading whitespace-only text nodes:
@@ -139,7 +139,7 @@
         }
 
         if (!current.voidElement && !inComponent && nextChar && nextChar !== '<') {
-          pushTextNode(current.children, html, level, start, options.ignoreWhitespace);
+          pushTextNode(current.children, html, level, start, options.ignoreWhitespace, options.ignoreCollapse);
         }
 
         byTag[current.tagName] = current; // if we're at root, push new base node
@@ -167,13 +167,13 @@
           // if we're at the root, push a base text node. otherwise add as
           // a child to the current node.
           parent = level === -1 ? result : arr[level].children;
-          pushTextNode(parent, html, level, start, options.ignoreWhitespace);
+          pushTextNode(parent, html, level, start, options.ignoreWhitespace, options.ignoreCollapse);
         }
       }
     }); // If the "html" passed isn't actually html, add it as a text node.
 
     if (!result.length && html.length) {
-      pushTextNode(result, html, 0, 0, options.ignoreWhitespace);
+      pushTextNode(result, html, 0, 0, options.ignoreWhitespace, options.ignoreCollapse);
     }
 
     return result;
@@ -221,7 +221,9 @@
   };
 
   function parse$1(str) {
-    const ast = htmlParseStringify2.parse(`<dummyI18nTag>${str}</dummyI18nTag>`);
+    const ast = htmlParseStringify2.parse(`<dummyI18nTag>${str}</dummyI18nTag>`, {
+      ignoreCollapse: true
+    });
     extendI18nextSugar(ast); // console.warn(JSON.stringify(ast, null, 2));
 
     return ast[0].children || [];
