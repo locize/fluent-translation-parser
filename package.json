@@ -1,6 +1,6 @@
 {
   "name": "fluent-translation-parser",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "parses fluent translations to AST",
   "main": "./index.js",
   "jsnext:main": "dist/es/index.js",
