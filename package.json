@@ -41,7 +41,7 @@
     "yargs": "12.0.2"
   },
   "scripts": {
-    "test": "mocha -r ./mocha_setup.j",
+    "test": "mocha -r ./mocha_setup.js",
     "tdd": "karma start karma.conf.js",
     "clean": "rimraf dist && mkdirp dist",
     "copy": "cp ./dist/umd/fluentTranslationParser.min.js ./fluentTranslationParser.min.js && cp ./dist/umd/fluentTranslationParser.js ./fluentTranslationParser.js",
