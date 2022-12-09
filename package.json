@@ -36,7 +36,7 @@
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-commonjs": "^9.1.6",
     "rollup-plugin-node-resolve": "3.4.0",
-    "rollup-plugin-terser": "^2.0.2",
+    "rollup-plugin-terser": "^7.0.2",
     "sinon": "6.2.0",
     "yargs": "12.0.2"
   },
